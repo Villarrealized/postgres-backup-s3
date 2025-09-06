@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 set -e
 
@@ -9,7 +9,7 @@ fi
 echo "$SCHEDULE /backup.sh >> /var/log/backup.log" > crontab.txt
 
 # Add crontab
-/usr/bin/crontab crontab.txt
+crontab crontab.txt
 
 # start cron
-/usr/sbin/crond -f -l 8
+cron -f -l 8

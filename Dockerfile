@@ -1,7 +1,13 @@
-FROM postgres:12.1-alpine
+FROM postgres:12.13
 
-ADD install.sh .
-RUN sh install.sh && rm install.sh
+RUN apt-get update && apt-get install -y tzdata curl cron unzip && rm -rf /var/lib/apt/lists/*
+
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
+    && unzip awscliv2.zip \
+    && ./aws/install \
+    && rm -rf awscliv2.zip aws
+
+
 
 ENV POSTGRES_DATABASE **None**
 ENV POSTGRES_HOST **None**
