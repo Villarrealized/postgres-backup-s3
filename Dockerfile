@@ -1,14 +1,21 @@
 FROM postgres:12.13
 
-RUN apt-get update && apt-get install -y tzdata curl cron unzip && rm -rf /var/lib/apt/lists/*
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    tzdata \
+    curl \
+    cron \
+    unzip \
+    bash \
+    && rm -rf /var/lib/apt/lists/*
 
+# Install AWS CLI v2
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
     && unzip awscliv2.zip \
     && ./aws/install \
     && rm -rf awscliv2.zip aws
 
-
-
+# Default ENV values (overridden by docker-compose env_file)
 ENV POSTGRES_DATABASE **None**
 ENV POSTGRES_HOST **None**
 ENV POSTGRES_PORT 5432
@@ -24,8 +31,10 @@ ENV S3_ENDPOINT **None**
 ENV S3_S3V4 no
 ENV SCHEDULE '0 0 * * *'
 
-ADD run.sh .
-ADD backup.sh .
-RUN chmod 755 backup.sh run.sh
+# Add scripts
+ADD run.sh /run.sh
+ADD backup.sh /backup.sh
 
-CMD ["sh", "run.sh"]
+RUN chmod 755 /run.sh /backup.sh
+
+CMD ["/bin/bash", "/run.sh"]
