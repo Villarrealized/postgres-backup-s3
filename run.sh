@@ -7,7 +7,7 @@ if [ "${S3_S3V4}" = "yes" ]; then
 fi
 
 # Dump all environment variables to a file for cron jobs
-printenv | sed 's/^\(.*\)$/export \1/' > /container.env
+printenv | awk -F= '{printf "export %s=\"%s\"\n", $1, $2}' > /container.env
 
 # Create cron job file (source env before running backup)
 echo "$SCHEDULE . /container.env; /backup.sh >> /var/log/backup.log 2>&1" > crontab.txt
